@@ -1,5 +1,7 @@
 package curso.udemy.spring.angular.ionc.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +28,7 @@ public class Produto implements Serializable {
 
     private Double preco;
 
+    @JsonBackReference
     @ManyToMany
     @JoinTable(name = "PRODUTO_CATEGORIA"
         , joinColumns = @JoinColumn(name = "produto_id")
