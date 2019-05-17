@@ -1,5 +1,6 @@
 package curso.udemy.spring.angular.ionc.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +36,7 @@ public class Endereco implements Serializable {
 
     private String cep;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="cliente_id")
     private Cliente cliente;
