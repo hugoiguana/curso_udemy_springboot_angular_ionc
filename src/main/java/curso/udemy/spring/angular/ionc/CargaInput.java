@@ -38,17 +38,27 @@ public class CargaInput implements CommandLineRunner {
     @Autowired
     private PagamentoRepository pagamentoRepository;
 
-    Cidade c1;
-    Cidade c2;
-    Cidade c3;
+    @Autowired
+    private ItemPedidoRepository itemPedidoRepository;
 
-    Cliente cli1;
+    private Cidade cidade1;
+    private Cidade cidade2;
+    private Cidade cidade3;
 
-    Estado est1;
-    Estado est2;
+    private Cliente cliente1;
 
-    Endereco e1;
-    Endereco e2;
+    private Estado estado1;
+    private Estado estado2;
+
+    private Endereco endereco1;
+    private Endereco endereco2;
+
+    private Pedido pedido1;
+    private Pedido pedido2;
+
+    private Produto produto1;
+    private Produto produto2;
+    private Produto produto3;
 
     @Override
     public void run(String... args) throws Exception {
@@ -56,72 +66,88 @@ public class CargaInput implements CommandLineRunner {
         inserirEstadosECidades();
         inserirClientesEEnderecos();
         inserirPedidosEPagamentos();
+        inserirEstadosECidades();
+        inserirItensDePedido();
     }
 
     private void inserirCategoriasEProdutos() {
         Categoria cat1 = new Categoria(null, "Informática");
         Categoria cat2 = new Categoria(null, "Escritório");
 
-        Produto p1 = new Produto(null, "Computador", 2000.00);
-        Produto p2 = new Produto(null, "Impressora", 800.00);
-        Produto p3 = new Produto(null, "Mouse", 80.00);
+        produto1 = new Produto(null, "Computador", 2000.00);
+        produto2 = new Produto(null, "Impressora", 800.00);
+        produto3 = new Produto(null, "Mouse", 80.00);
 
-        cat1.getProdutos().addAll(Arrays.asList(p1, p2, p3));
-        cat2.getProdutos().addAll(Arrays.asList(p2));
+        cat1.getProdutos().addAll(Arrays.asList(produto1, produto2, produto3));
+        cat2.getProdutos().addAll(Arrays.asList(produto2));
 
-        p1.getCategorias().addAll(Arrays.asList(cat1));
-        p2.getCategorias().addAll(Arrays.asList(cat1, cat2));
-        p3.getCategorias().addAll(Arrays.asList(cat1));
+        produto1.getCategorias().addAll(Arrays.asList(cat1));
+        produto2.getCategorias().addAll(Arrays.asList(cat1, cat2));
+        produto3.getCategorias().addAll(Arrays.asList(cat1));
 
         categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
-        produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
+        produtoRepository.saveAll(Arrays.asList(produto1, produto2, produto3));
     }
 
     private void inserirEstadosECidades() {
-        est1 = new Estado(null, "Minas Gerais");
-        est2 = new Estado(null, "São Paulo");
+        estado1 = new Estado(null, "Minas Gerais");
+        estado2 = new Estado(null, "São Paulo");
 
-        c1 = new Cidade(null, "Uberlândia", est1);
-        c2 = new Cidade(null, "São Paulo", est2);
-        c3 = new Cidade(null, "Campinas", est2);
+        cidade1 = new Cidade(null, "Uberlândia", estado1);
+        cidade2 = new Cidade(null, "São Paulo", estado2);
+        cidade3 = new Cidade(null, "Campinas", estado2);
 
-        est1.getCidades().addAll(Arrays.asList(c1));
-        est2.getCidades().addAll(Arrays.asList(c2, c3));
+        estado1.getCidades().addAll(Arrays.asList(cidade1));
+        estado2.getCidades().addAll(Arrays.asList(cidade2, cidade3));
 
-        estadoRepository.saveAll(Arrays.asList(est1, est2));
-        cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
+        estadoRepository.saveAll(Arrays.asList(estado1, estado2));
+        cidadeRepository.saveAll(Arrays.asList(cidade1, cidade2, cidade3));
     }
 
     private void inserirClientesEEnderecos() {
-        cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
+        cliente1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
+        cliente1.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
 
-        cli1.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
+        endereco1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cliente1, cidade1);
+        endereco2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cliente1, cidade2);
 
-        e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cli1, c1);
-        e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
+        cliente1.getEnderecos().addAll(Arrays.asList(endereco1, endereco2));
 
-        cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
-
-        clienteRepository.saveAll(Arrays.asList(cli1));
-        enderecoRepository.saveAll(Arrays.asList(e1, e2));
+        clienteRepository.saveAll(Arrays.asList(cliente1));
+        enderecoRepository.saveAll(Arrays.asList(endereco1, endereco2));
     }
 
     private void inserirPedidosEPagamentos() throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-        Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
-        Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+        pedido1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cliente1, endereco1);
+        pedido2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cliente1, endereco2);
 
-        Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
-        ped1.setPagamento(pagto1);
+        Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, pedido1, 6);
+        pedido1.setPagamento(pagto1);
 
-        Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
-        ped2.setPagamento(pagto2);
+        Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, pedido2, sdf.parse("20/10/2017 00:00"), null);
+        pedido2.setPagamento(pagto2);
 
-        cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+        cliente1.getPedidos().addAll(Arrays.asList(pedido1, pedido2));
 
-        pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+        pedidoRepository.saveAll(Arrays.asList(pedido1, pedido2));
         pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+    }
+
+    private void inserirItensDePedido() {
+        ItemPedido itemPedido1 = new ItemPedido(pedido1, produto1, 0.00, 1, 2000.00);
+        ItemPedido itemPedido2 = new ItemPedido(pedido1, produto3, 0.00, 2, 80.00);
+        ItemPedido itemPedido3 = new ItemPedido(pedido2, produto2, 100.00, 1, 800.00);
+
+        pedido1.getItens().addAll(Arrays.asList(itemPedido1, itemPedido2));
+        pedido2.getItens().addAll(Arrays.asList(itemPedido3));
+
+        produto1.getItens().addAll(Arrays.asList(itemPedido1));
+        produto2.getItens().addAll(Arrays.asList(itemPedido3));
+        produto3.getItens().addAll(Arrays.asList(itemPedido2));
+
+        itemPedidoRepository.saveAll(Arrays.asList(itemPedido1, itemPedido2, itemPedido3));
     }
 
 }
