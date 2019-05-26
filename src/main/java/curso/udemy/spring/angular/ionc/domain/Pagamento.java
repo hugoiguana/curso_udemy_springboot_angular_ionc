@@ -1,5 +1,6 @@
 package curso.udemy.spring.angular.ionc.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import curso.udemy.spring.angular.ionc.domain.enums.EstadoPagamento;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class Pagamento implements Serializable {
 
     private Integer estado;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "pedido_id")
     @MapsId
