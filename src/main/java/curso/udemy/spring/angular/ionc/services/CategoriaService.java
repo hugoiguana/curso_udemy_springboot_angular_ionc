@@ -2,8 +2,10 @@ package curso.udemy.spring.angular.ionc.services;
 
 import curso.udemy.spring.angular.ionc.domain.Categoria;
 import curso.udemy.spring.angular.ionc.repositories.CategoriaRepository;
+import curso.udemy.spring.angular.ionc.services.exceptions.DataIntegrityException;
 import curso.udemy.spring.angular.ionc.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,5 +30,15 @@ public class CategoriaService {
     public Categoria update(Categoria categoria) {
         find(categoria.getId());
         return repo.save(categoria);
+    }
+
+    public void delete(Integer id) {
+        find(id);
+        try {
+            repo.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos");
+        }
     }
 }
