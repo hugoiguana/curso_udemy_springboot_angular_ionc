@@ -1,6 +1,7 @@
 package curso.udemy.spring.angular.ionc.services;
 
 import curso.udemy.spring.angular.ionc.domain.Categoria;
+import curso.udemy.spring.angular.ionc.dto.CategoriaDTO;
 import curso.udemy.spring.angular.ionc.repositories.CategoriaRepository;
 import curso.udemy.spring.angular.ionc.services.exceptions.DataIntegrityException;
 import curso.udemy.spring.angular.ionc.services.exceptions.ObjectNotFoundException;
@@ -53,5 +54,9 @@ public class CategoriaService {
     public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         return repository.findAll(pageRequest);
+    }
+
+    public Categoria fromDTO(CategoriaDTO objDto) {
+        return new Categoria(objDto.getId(), objDto.getNome());
     }
 }
