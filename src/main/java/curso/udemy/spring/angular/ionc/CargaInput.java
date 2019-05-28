@@ -73,6 +73,11 @@ public class CargaInput implements CommandLineRunner {
     private void inserirCategoriasEProdutos() {
         Categoria cat1 = new Categoria(null, "Informática");
         Categoria cat2 = new Categoria(null, "Escritório");
+        Categoria cat3 = new Categoria(null, "Cama mesa e banho");
+        Categoria cat4 = new Categoria(null, "Eletrônicos");
+        Categoria cat5 = new Categoria(null, "Jardinagem");
+        Categoria cat6 = new Categoria(null, "Decoração");
+        Categoria cat7 = new Categoria(null, "Perfumaria");
 
         produto1 = new Produto(null, "Computador", 2000.00);
         produto2 = new Produto(null, "Impressora", 800.00);
@@ -85,7 +90,7 @@ public class CargaInput implements CommandLineRunner {
         produto2.getCategorias().addAll(Arrays.asList(cat1, cat2));
         produto3.getCategorias().addAll(Arrays.asList(cat1));
 
-        categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
+        categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat3, cat4, cat5, cat6, cat7));
         produtoRepository.saveAll(Arrays.asList(produto1, produto2, produto3));
     }
 
