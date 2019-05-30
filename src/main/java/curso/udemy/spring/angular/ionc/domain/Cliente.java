@@ -30,6 +30,7 @@ public class Cliente  implements Serializable {
 
     private String nome;
 
+    @Column(unique = true)
     private String email;
 
     private String cpfOuCnpj;
