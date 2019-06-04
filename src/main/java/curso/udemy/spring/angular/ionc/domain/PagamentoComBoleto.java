@@ -1,6 +1,7 @@
 package curso.udemy.spring.angular.ionc.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import curso.udemy.spring.angular.ionc.domain.enums.EstadoPagamento;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Entity
+@JsonTypeName("pagamentoComBoleto")
 public class PagamentoComBoleto extends Pagamento {
 
     private static final long serialVersionUID = 1L;
