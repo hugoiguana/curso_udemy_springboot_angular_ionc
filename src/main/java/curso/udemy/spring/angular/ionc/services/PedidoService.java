@@ -34,6 +34,9 @@ public class PedidoService {
     @Autowired
     private ProdutoService produtoService;
 
+    @Autowired
+    private ClienteService clienteService;
+
     public Pedido find(Integer id) {
         Optional<Pedido> obj = repo.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException(
@@ -44,6 +47,7 @@ public class PedidoService {
     public Pedido insert(Pedido pedido) {
         pedido.setId(null);
         pedido.setInstante(new Date());
+        pedido.setCliente(clienteService.find(pedido.getCliente().getId()));
         pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE);
         pedido.getPagamento().setPedido(pedido);
         if (pedido.getPagamento() instanceof PagamentoComBoleto) {
@@ -54,10 +58,12 @@ public class PedidoService {
         //pagamentoRepository.save(pedido.getPagamento()); -- Não presisa, pois o pagamento é inserido em cascata através do save do pedido.
         for (ItemPedido ip : pedido.getItens()) {
             ip.setDesconto(0.0);
-            ip.setPreco(produtoService.find(ip.getProduto().getId()).getPreco());
+            ip.setProduto(produtoService.find(ip.getProduto().getId()));
+            ip.setPreco(ip.getProduto().getPreco());
             ip.setPedido(pedido);
         }
         itemPedidoRepository.saveAll(pedido.getItens());
+        System.out.println(pedido);
         return pedido;
     }
 
