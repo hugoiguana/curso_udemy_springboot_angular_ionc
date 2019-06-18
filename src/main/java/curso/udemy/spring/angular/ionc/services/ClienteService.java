@@ -4,10 +4,13 @@ import curso.udemy.spring.angular.ionc.domain.Cidade;
 import curso.udemy.spring.angular.ionc.domain.Cliente;
 import curso.udemy.spring.angular.ionc.domain.Endereco;
 import curso.udemy.spring.angular.ionc.domain.TipoCliente;
+import curso.udemy.spring.angular.ionc.domain.enums.Perfil;
 import curso.udemy.spring.angular.ionc.dto.ClienteDTO;
 import curso.udemy.spring.angular.ionc.dto.ClienteNewDTO;
 import curso.udemy.spring.angular.ionc.repositories.ClienteRepository;
 import curso.udemy.spring.angular.ionc.repositories.EnderecoRepository;
+import curso.udemy.spring.angular.ionc.security.UserSS;
+import curso.udemy.spring.angular.ionc.services.exceptions.AuthorizationException;
 import curso.udemy.spring.angular.ionc.services.exceptions.DataIntegrityException;
 import curso.udemy.spring.angular.ionc.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,10 @@ public class ClienteService {
     private BCryptPasswordEncoder pe;
 
     public Cliente find(Integer id) {
+        UserSS user = UserService.authenticated();
+        if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+            throw new AuthorizationException("Acesso negado");
+        }
         Optional<Cliente> obj = repository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException(
                 "Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
