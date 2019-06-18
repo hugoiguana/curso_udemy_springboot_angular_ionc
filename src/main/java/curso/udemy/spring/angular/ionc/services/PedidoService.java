@@ -3,6 +3,7 @@ package curso.udemy.spring.angular.ionc.services;
 import java.util.Date;
 import java.util.Optional;
 
+import curso.udemy.spring.angular.ionc.domain.Cliente;
 import curso.udemy.spring.angular.ionc.domain.ItemPedido;
 import curso.udemy.spring.angular.ionc.domain.PagamentoComBoleto;
 import curso.udemy.spring.angular.ionc.domain.Pedido;
@@ -11,8 +12,13 @@ import curso.udemy.spring.angular.ionc.repositories.ItemPedidoRepository;
 import curso.udemy.spring.angular.ionc.repositories.PagamentoRepository;
 import curso.udemy.spring.angular.ionc.repositories.PedidoRepository;
 import curso.udemy.spring.angular.ionc.resources.PedidoResource;
+import curso.udemy.spring.angular.ionc.security.UserSS;
+import curso.udemy.spring.angular.ionc.services.exceptions.AuthorizationException;
 import curso.udemy.spring.angular.ionc.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +74,16 @@ public class PedidoService {
         itemPedidoRepository.saveAll(pedido.getItens());
         emailService.sendOrderConfirmationEmail(pedido);
         return pedido;
+    }
+
+    public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+        UserSS user = UserService.authenticated();
+        if (user == null) {
+            throw new AuthorizationException("Acesso negado");
+        }
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        Cliente cliente = clienteService.find(user.getId());
+        return repo.findByCliente(cliente, pageRequest);
     }
 
 }
