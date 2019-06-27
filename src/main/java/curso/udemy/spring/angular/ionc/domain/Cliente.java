@@ -57,8 +57,6 @@ public class Cliente  implements Serializable {
     @CollectionTable( name = "perfis" )
     private Set<Integer> perfis = new HashSet<>();
 
-    private String imageUrl;
-
     public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo, String senha) {
         super();
         this.id = id;
